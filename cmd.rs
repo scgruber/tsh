@@ -22,7 +22,8 @@ impl fmt::Show for BuiltinCmd {
 pub enum Cmd {
   Exec(String, Vec<String>), // Executable, Arguments
   Builtin(BuiltinCmd),
-  Error
+  Error,
+  Null
 }
 
 impl fmt::Show for Cmd {
@@ -30,14 +31,16 @@ impl fmt::Show for Cmd {
     match *self {
       Exec(ref prog, ref args) => write!(f, "exec {} {}", prog, args),
       Builtin(cmd) => write!(f, "builtin {}", cmd),
-      Error => write!(f, "error")
+      Error => write!(f, "error"),
+      Null => write!(f, "()")
     }
   }
 }
 
 pub fn parse_cmd(user_input : Result<String,io::IoError>) -> Cmd {
   match user_input {
-    Ok(input) => Exec(input.replace("\n",""), vec![]),
-    Err(e) => Error
+    Ok(ref input) if input.equiv(&"\n") => Null,
+    Ok(ref input) => Exec(input.replace("\n",""), vec![]),
+    Err(ref e) => Error
   }
 }
