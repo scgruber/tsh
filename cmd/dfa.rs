@@ -1,4 +1,5 @@
 use std::char;
+use std::fmt;
 use cmd;
 
 enum State {
@@ -22,6 +23,28 @@ enum State {
 impl PartialEq for State {
   fn eq(&self, other: &State) -> bool {
     (*self as int) == (*other as int)
+  }
+}
+
+impl fmt::Show for State {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    match *self {
+      INITIAL => write!(f, "INITIAL"),
+      Q => write!(f, "Q"),
+      QU => write!(f, "QU"),
+      QUI => write!(f, "QUI"),
+      QUIT => write!(f, "QUIT"),
+      J => write!(f, "J"),
+      JO => write!(f, "JO"),
+      JOB => write!(f, "JOB"),
+      JOBS => write!(f, "JOBS"),
+      F => write!(f, "F"),
+      FG => write!(f, "FG"),
+      FGN => write!(f, "FGN"),
+      B => write!(f, "B"),
+      BG => write!(f, "BG"),
+      BGN => write!(f, "BGN")
+    }
   }
 }
 
