@@ -58,27 +58,27 @@ fn state_to_builtin(state: State, jid: int) -> Option<cmd::BuiltinCmd> {
   }
 }
 
-pub fn builtin_parse_dfa(input: Vec<u16>) -> Option<cmd::BuiltinCmd> {
+pub fn builtin_parse_dfa(input: &str) -> Option<cmd::BuiltinCmd> {
   let mut dfa_state = INITIAL;
   let mut jid : int = -1;
-  for current_character in input.iter() {
-    let character = char::from_u32(*current_character as u32);
+  for character in input.chars() {
     match character {
-      None => return state_to_builtin(dfa_state, jid),
-      Some('b') if dfa_state == INITIAL => dfa_state = B,
-      Some('b') if dfa_state == JO => dfa_state = JOB,
-      Some('f') if dfa_state == INITIAL => dfa_state = F,
-      Some('g') if dfa_state == F => dfa_state = FG,
-      Some('g') if dfa_state == B => dfa_state = BG,
-      Some('i') if dfa_state == QU => dfa_state = QUI,
-      Some('j') if dfa_state == INITIAL => dfa_state = J,
-      Some('o') if dfa_state == J => dfa_state = JO,
-      Some('q') if dfa_state == INITIAL => dfa_state = Q,
-      Some('s') if dfa_state == JOB => dfa_state = JOBS,
-      Some('t') if dfa_state == QUI => dfa_state = QUIT,
-      Some('u') if dfa_state == Q => dfa_state = QU,
-      Some(' ') => (),
-      Some(ch) if char::is_digit(ch) => {
+      'b' if dfa_state == INITIAL => dfa_state = B,
+      'b' if dfa_state == JO => dfa_state = JOB,
+      'f' if dfa_state == INITIAL => dfa_state = F,
+      'g' if dfa_state == F => dfa_state = FG,
+      'g' if dfa_state == B => dfa_state = BG,
+      'i' if dfa_state == QU => dfa_state = QUI,
+      'j' if dfa_state == INITIAL => dfa_state = J,
+      'o' if dfa_state == J => dfa_state = JO,
+      'q' if dfa_state == INITIAL => dfa_state = Q,
+      's' if dfa_state == JOB => dfa_state = JOBS,
+      't' if dfa_state == QUI => dfa_state = QUIT,
+      'u' if dfa_state == Q => dfa_state = QU,
+      ' ' => (),
+      '\t' => (),
+      '\n' => (),
+      ch if char::is_digit(ch) => {
         match dfa_state {
           FG => {
             dfa_state = FGN;
@@ -99,8 +99,8 @@ pub fn builtin_parse_dfa(input: Vec<u16>) -> Option<cmd::BuiltinCmd> {
           _ => return None
         }
       }
-      Some(_) => return None
+      _ => return None
     }
   };
-  return None;
+  state_to_builtin(dfa_state, jid)
 }

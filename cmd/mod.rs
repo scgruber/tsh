@@ -42,8 +42,13 @@ impl fmt::Show for Cmd {
 pub fn parse_cmd(user_input : Result<String,io::IoError>) -> Cmd {
   match user_input {
     Ok(ref input) => {
-      match dfa::builtin_parse_dfa(input.replace("\n","").to_utf16()) {
-        _ => Null
+      match dfa::builtin_parse_dfa(input.as_slice()) {
+        Some(builtin) => Builtin(builtin),
+        None => if input.as_slice().trim() == "" {
+                  Null
+                } else {
+                  Exec(input.replace("\n",""), vec![])
+                }
       }
     },
     Err(ref e) => Error
