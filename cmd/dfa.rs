@@ -35,13 +35,12 @@ fn state_to_builtin(state: State, jid: int) -> Option<cmd::BuiltinCmd> {
   }
 }
 
-pub fn builtin_parse_dfa(input: &str) -> Option<cmd::BuiltinCmd> {
-  let mut chars = input.chars();
+pub fn builtin_parse_dfa(input: Vec<u16>) -> Option<cmd::BuiltinCmd> {
   let mut dfa_state = INITIAL;
   let mut jid : int = -1;
-  loop {
-    let current_character = chars.next();
-    match current_character {
+  for current_character in input.iter() {
+    let character = char::from_u32(*current_character as u32);
+    match character {
       None => return state_to_builtin(dfa_state, jid),
       Some('b') if dfa_state == INITIAL => dfa_state = B,
       Some('b') if dfa_state == JO => dfa_state = JOB,
@@ -80,4 +79,5 @@ pub fn builtin_parse_dfa(input: &str) -> Option<cmd::BuiltinCmd> {
       Some(_) => return None
     }
   };
+  return None;
 }

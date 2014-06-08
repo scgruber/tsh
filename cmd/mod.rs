@@ -41,12 +41,11 @@ impl fmt::Show for Cmd {
 
 pub fn parse_cmd(user_input : Result<String,io::IoError>) -> Cmd {
   match user_input {
-    Ok(ref input) if input.replace(" ","").equiv(&"\n") => Null,
-    Ok(ref input) if input.equiv(&"quit\n") => Builtin(Quit),
-    Ok(ref input) if input.equiv(&"jobs\n") => Builtin(Jobs),
-    Ok(ref input) if input.equiv(&"fg\n") => Builtin(Foreground),
-    Ok(ref input) if input.equiv(&"bg\n") => Builtin(Background),
-    Ok(ref input) => Exec(input.replace("\n",""), vec![]),
+    Ok(ref input) => {
+      match dfa::builtin_parse_dfa(input.replace("\n","").to_utf16()) {
+        _ => Null
+      }
+    },
     Err(ref e) => Error
   }
 }
