@@ -37,7 +37,7 @@ impl fmt::Show for Cmd {
 
 pub fn parse_cmd(user_input : Result<String,io::IoError>) -> Cmd {
   match user_input {
-    Ok(input) => Exec(input, vec![]),
+    Ok(input) => Exec(input.replace("\n",""), vec![]),
     Err(e) => Error
   }
 }
