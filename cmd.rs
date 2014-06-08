@@ -25,6 +25,16 @@ pub enum Cmd {
   Error
 }
 
+impl fmt::Show for Cmd {
+  fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    match *self {
+      Exec(ref prog, ref args) => write!(f, "exec {} {}", prog, args),
+      Builtin(cmd) => write!(f, "builtin {}", cmd),
+      Error => write!(f, "error")
+    }
+  }
+}
+
 pub fn parse_cmd(user_input : Result<String,io::IoError>) -> Cmd {
   match user_input {
     Ok(input) => Exec(input, vec![]),
