@@ -75,9 +75,7 @@ pub fn builtin_parse_dfa(input: &str) -> Option<cmd::BuiltinCmd> {
       's' if dfa_state == JOB => dfa_state = JOBS,
       't' if dfa_state == QUI => dfa_state = QUIT,
       'u' if dfa_state == Q => dfa_state = QU,
-      ' ' => (),
-      '\t' => (),
-      '\n' => (),
+      ' ' | '\t' | '\n' => (),
       ch if char::is_digit(ch) => {
         match dfa_state {
           FG => {
