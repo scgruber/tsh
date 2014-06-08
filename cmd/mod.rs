@@ -1,6 +1,8 @@
 use std::io;
 use std::fmt;
 
+mod dfa;
+
 pub enum BuiltinCmd {
   Quit,
   Jobs,
