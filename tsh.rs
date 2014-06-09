@@ -3,9 +3,12 @@ use std::io::Command;
 use std::io::process;
 
 mod cmd;
+mod job;
 
 /// Accepts commands from the user.
 fn main() {
+  // Initialize jobs list
+  let mut jobs = job::JobsList::new();
   loop {
     print!("tsh> ");
     let command = cmd::parse_cmd(io::stdin().read_line());
@@ -17,7 +20,7 @@ fn main() {
         return
       },
       cmd::Builtin(cmd::Jobs) => {
-        println!("`jobs` Unimplemented")
+        println!("{}", jobs)
       },
       cmd::Builtin(cmd::Foreground) => {
         println!("`fg` Unimplemented")
