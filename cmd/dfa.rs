@@ -2,6 +2,7 @@ use std::char;
 use std::fmt;
 use cmd;
 
+/// States of the DFA.
 enum State {
   INITIAL,
   Q,
@@ -48,6 +49,7 @@ impl fmt::Show for State {
   }
 }
 
+/// Matches the final states of the DFA to the built-in commands. 
 fn state_to_builtin(state: State, jid: int) -> Option<cmd::BuiltinCmd> {
   match state {
     QUIT => Some(cmd::Quit),
@@ -58,6 +60,8 @@ fn state_to_builtin(state: State, jid: int) -> Option<cmd::BuiltinCmd> {
   }
 }
 
+/// Processes the input string through a DFA to determine if any built-in 
+/// commands are being activated by the user.
 pub fn builtin_parse_dfa(input: &str) -> Option<cmd::BuiltinCmd> {
   let mut dfa_state = INITIAL;
   let mut jid : int = -1;

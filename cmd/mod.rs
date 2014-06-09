@@ -3,6 +3,8 @@ use std::fmt;
 
 mod dfa;
 
+/// Kinds of built-in commands to tsh. These supersede programs of the same 
+/// name.
 pub enum BuiltinCmd {
   Quit,
   Jobs,
@@ -21,6 +23,7 @@ impl fmt::Show for BuiltinCmd {
   }
 }
 
+/// Kinds of commands entered by the user.
 pub enum Cmd {
   Exec(String, Vec<String>), // Executable, Arguments
   Builtin(BuiltinCmd),
@@ -39,6 +42,7 @@ impl fmt::Show for Cmd {
   }
 }
 
+/// Extracts a Cmd from the user's input.
 pub fn parse_cmd(user_input : Result<String,io::IoError>) -> Cmd {
   match user_input {
     Ok(ref input) => {

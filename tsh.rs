@@ -4,6 +4,7 @@ use std::io::process;
 
 mod cmd;
 
+/// Accepts commands from the user.
 fn main() {
   loop {
     print!("tsh> ");
@@ -33,6 +34,8 @@ fn main() {
   }
 }
 
+/// Runs a command in a separate process, blocking tsh until the command 
+/// finishes.
 fn exec(prog: &str, args: &[String]) {
   match Command::new(prog).args(args)
                           .stdin(process::InheritFd(0))
