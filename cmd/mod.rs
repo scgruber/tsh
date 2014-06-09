@@ -47,7 +47,7 @@ pub fn parse_cmd(user_input : Result<String,io::IoError>) -> Cmd {
         None => if input.as_slice().trim() == "" {
                   Null
                 } else {
-                  Exec(input.replace("\n",""), vec![])
+                  Exec(from_str::<String>(input.as_slice().trim()).unwrap(), vec![])
                 }
       }
     },
