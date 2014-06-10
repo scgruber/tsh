@@ -58,3 +58,33 @@ pub fn parse_cmd(user_input : Result<String,io::IoError>) -> Cmd {
     Err(ref e) => Error
   }
 }
+
+#[test]
+fn parse_cmd_test_quit() {
+  let input = Ok("quit\n".to_string());
+  match parse_cmd(input) {
+    Builtin(Quit) => (),
+    _ => fail!()
+  }
+}
+
+#[test]
+fn parse_cmd_test_whitespace() {
+  let input = Ok("    \n".to_string());
+  match parse_cmd(input) {
+    Null => (),
+    _ => fail!()
+  }
+}
+
+#[test]
+fn parse_cmd_test_foocmd() {
+  let input = Ok("foocmd\n".to_string());
+  match parse_cmd(input) {
+    Exec(cmd, args) => {
+      assert_eq!(cmd, "foocmd".to_string());
+      assert_eq!(args, vec![]);
+    },
+    _ => fail!()
+  }
+}
