@@ -46,6 +46,31 @@ impl JobsList {
     }
     return None
   }
+
+  pub fn extract(&mut self, jid: int) -> Option<(int, String)> {
+    let mut lower_bound = 0;
+    let mut upper_bound = self.jobs.len();
+    loop {
+      if (jid > self.jobs.get(upper_bound-1).jid) || 
+        (jid < self.jobs.get(lower_bound).jid) {
+        // Search out of bounds, could not find job
+        return None
+      } else {
+        let mid = ((upper_bound - lower_bound) / 2) + lower_bound;
+        if jid == self.jobs.get(mid).jid {
+          // This is the job we are trying to extract
+          match self.jobs.remove(mid) {
+            Some(Job {pid, cmd, ..}) => return Some((pid, cmd)),
+            None => fail!("Unexpected out of bounds in jobs vector!")
+          }
+        } else if jid > self.jobs.get(mid).jid {
+          lower_bound = mid+1;
+        } else {
+          upper_bound = mid;
+        }
+      }
+    }
+  }
 }
 
 #[test]
@@ -72,6 +97,39 @@ fn jobslist_jid_from_pid_none() {
   list.push(9876, "bar".to_string());
   list.push(1010, "baz".to_string());
   assert_eq!(list.jid_from_pid(2468), None);
+}
+
+#[test]
+fn jobslist_extract_first() {
+  let mut list = JobsList::new();
+  list.push(1234, "foo".to_string());
+  list.push(2048, "spiff".to_string());
+  list.push(9876, "bar".to_string());
+  list.push(7997, "buzz".to_string());
+  list.push(1010, "baz".to_string());
+  assert_eq!(list.extract(0), Some((1234, "foo".to_string())));
+}
+
+#[test]
+fn jobslist_extract_middle() {
+  let mut list = JobsList::new();
+  list.push(1234, "foo".to_string());
+  list.push(2048, "spiff".to_string());
+  list.push(9876, "bar".to_string());
+  list.push(7997, "buzz".to_string());
+  list.push(1010, "baz".to_string());
+  assert_eq!(list.extract(2), Some((9876, "bar".to_string())));
+}
+
+#[test]
+fn jobslist_extract_last() {
+  let mut list = JobsList::new();
+  list.push(1234, "foo".to_string());
+  list.push(2048, "spiff".to_string());
+  list.push(9876, "bar".to_string());
+  list.push(7997, "buzz".to_string());
+  list.push(1010, "baz".to_string());
+  assert_eq!(list.extract(4), Some((1010, "baz".to_string())));
 }
 
 impl fmt::Show for JobsList {
