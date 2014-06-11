@@ -27,15 +27,18 @@ pub struct JobsList{
 }
 
 impl JobsList {
+  /// Creates a new empty JobsList.
   pub fn new() -> JobsList {
     JobsList{ jobs: vec![], max_jid: 0 }
   }
 
+  /// Adds a new job to the list.
   pub fn push(&mut self, pid: int, cmd: String) {
     self.jobs.push(Job{jid: self.max_jid, pid: pid, cmd: cmd});
     self.max_jid = self.max_jid + 1;
   }
 
+  /// Looks up a job's JID from its PID.
   pub fn jid_from_pid(&self, pid: int) -> Option<int> {
     for job in self.jobs.iter() {
       if job.pid == pid {
@@ -47,6 +50,8 @@ impl JobsList {
     return None
   }
 
+  /// Looks for a job by JID. If the job is found, returns the tuple of that 
+  /// job's PID and its command line. If the job is not found, returns None.
   pub fn extract(&mut self, jid: int) -> Option<(int, String)> {
     let mut lower_bound = 0;
     let mut upper_bound = self.jobs.len();
