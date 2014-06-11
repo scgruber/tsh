@@ -4,7 +4,8 @@ use std::fmt;
 struct Job {
   jid: int,
   pid: int,
-  cmd: String
+  cmd: String,
+  is_running: bool
 }
 
 impl PartialEq for Job {
@@ -15,7 +16,10 @@ impl PartialEq for Job {
 
 impl fmt::Show for Job {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    write!(f, "{}\t{}\t{}", self.jid, self.pid, self.cmd)
+    write!(f, "{}\t{}\t{}\t{}", self.jid, 
+                                self.pid, 
+                                self.cmd, 
+                                if self.is_running { "Run" } else { "Slp" })
   }
 }
 
@@ -34,7 +38,10 @@ impl JobsList {
 
   /// Adds a new job to the list.
   pub fn push(&mut self, pid: int, cmd: String) {
-    self.jobs.push(Job{jid: self.max_jid, pid: pid, cmd: cmd});
+    self.jobs.push(Job {jid: self.max_jid, 
+                        pid: pid, 
+                        cmd: cmd, 
+                        is_running: false});
     self.max_jid = self.max_jid + 1;
   }
 
@@ -83,7 +90,10 @@ fn jobslist_push_zeroes() {
   let mut list = JobsList::new();
   list.push(0, "".to_string());
   assert_eq!(list.max_jid, 1);
-  assert_eq!(list.jobs, vec![Job{jid:0, pid:0, cmd: "".to_string()}]);
+  assert_eq!(list.jobs, vec![Job {jid:0, 
+                                  pid:0, 
+                                  cmd: "".to_string(), 
+                                  is_running: false}]);
 }
 
 #[test]
@@ -139,7 +149,7 @@ fn jobslist_extract_last() {
 
 impl fmt::Show for JobsList {
   fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-    let mut repr: String = "JID\tPID\tCMD\n".to_string();
+    let mut repr: String = "JID\tPID\tCMD\tSTAT\n".to_string();
     for job in self.jobs.iter() {
       repr = repr.append(format!("{}\n", job).as_slice());
     }
