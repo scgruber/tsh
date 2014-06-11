@@ -106,3 +106,48 @@ pub fn builtin_parse_dfa(input: &str) -> Option<cmd::BuiltinCmd> {
   };
   state_to_builtin(dfa_state, jid)
 }
+
+#[test]
+fn builtin_parse_dfa_quit() {
+  let input = "quit";
+  match builtin_parse_dfa(input) {
+    Some(cmd::Quit) => (),
+    _ => fail!()
+  }
+}
+
+#[test]
+fn builtin_parse_dfa_jobs() {
+  let input = "jobs";
+  match builtin_parse_dfa(input) {
+    Some(cmd::Jobs) => (),
+    _ => fail!()
+  }
+}
+
+#[test]
+fn builtin_parse_dfa_fg() {
+  let input = "fg 1234";
+  match builtin_parse_dfa(input) {
+    Some(cmd::Foreground) => (),
+    _ => fail!()
+  }
+}
+
+#[test]
+fn builtin_parse_dfa_bg() {
+  let input = "bg 02846";
+  match builtin_parse_dfa(input) {
+    Some(cmd::Background) => (),
+    _ => fail!()
+  }
+}
+
+#[test]
+fn builtin_parse_dfa_whitespace() {
+  let input = "  \t ";
+  match builtin_parse_dfa(input) {
+    None => (),
+    _ => fail!()
+  }
+}
